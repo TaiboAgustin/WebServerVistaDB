@@ -1,0 +1,30 @@
+.container{
+    font-weight: bold;
+    font-family: Roboto;
+    text-align:center;
+}
+
+.formCard{
+    background-color:#5EB1BF;
+    color: #D84727;
+    text-align:center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1em 10em;
+    padding: 2em;
+}
+
+.error, .formError{
+    color: red;
+    background-color: pink;
+    border-radius: 20px;
+}
+.product{
+    margin-top: 1rem;
+    padding: 0.5em;
+    background-color: #CDEDF6;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}

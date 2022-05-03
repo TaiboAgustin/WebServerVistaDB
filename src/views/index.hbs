@@ -1,0 +1,67 @@
+{{>header}}
+
+<div class="container">
+    <div class="formCard">
+    <h1>Agregar producto:</h1>
+    <form action="" name="Products" onsubmit="return createProd(this)">
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Nombre del producto: </span>
+            <input type="text" class="form-control" name="title" id="title" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Ingrese el precio del producto: </span>
+            <input type="number" class="form-control" id="price" name="price" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">URL de la imagen </span>
+            <input type="url" class="form-control" id="thumbnail" name="thumbnail" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin:1.5em;">
+            Agregar producto</button>
+    </form>
+    </div>
+    <div class="row" style="padding: 1em;border-color:white;border-style:solid;border-width: 1px 0px">
+        <div class="col">
+            Nombre
+        </div>
+        <div class="col">
+            Precio
+        </div>
+        <div class="col-3">
+            Imagen
+        </div>
+    </div>
+    <div class="row" style="padding: 1em;border-color:white;border-style:solid;border-width: 1px 0px">
+        <!-- Here goes the data sent from server -->
+        <div id="productCatalog"></div>
+    </div>
+
+
+
+    <div class="formCard">
+        <h1>Mensajes:</h1>
+        
+        <form action="" name="Messages" onsubmit="return sendMsg(this)">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Ingrese su Email: </span>
+                <input type="text" class="form-control" id="email" name="email" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default"> Ingrese su mensaje: </span>
+                <input type="text" class="form-control" id="msg" name="msg" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="margin:1.5em;">
+                Enviar</button>
+        </form>
+        <div id="messages"></div>
+    </div>
+    </div>
+</div>
+
+
+{{>footer}}
