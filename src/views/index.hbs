@@ -1,5 +1,9 @@
 {{>header}}
 
+{{#if isTestView}}
+{{> testView}}
+
+{{else}}
 <div class="container">
     <div class="formCard">
     <h1>Agregar producto:</h1>
@@ -62,6 +66,7 @@
     </div>
     </div>
 </div>
+{{/if}}
 
 
 {{>footer}}

@@ -19,6 +19,10 @@ app.use("/api", routerAPI);
 server.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
 server.on("error", (error) => console.log("Server Error\n\t", error));
 
+const {
+    faker
+} = require('@faker-js/faker');
+
 // handlebars engine
 app.engine(
     "hbs",
@@ -56,6 +60,42 @@ app.get('/productos', (req, res) => {
             console.log('Error getting messages: ', e);
         })
 });
+
+//Función generadora de productos.
+faker.locale = 'es'
+
+function genProducts(cant) {
+    const generatedProducts = [];
+    let r = 0;
+
+    for (let i = 0; i < cant; i++) {
+        generatedProducts.push({
+            id: faker.datatype.uuid(),
+            title: faker.commerce.product(),
+            thumbnail: `${faker.image.technics()}?random=${r++}`,
+            price: faker.commerce.price(),
+        })
+    }
+
+    return generatedProducts;
+}
+
+// Ruta para Faker
+app.get('/productos/test/:cant?', (req, res) => {
+
+    let fakeProds
+    if (req.params.cant != undefined) {
+        fakeProds = genProducts(req.params.cant);
+    } else {
+        fakeProds = genProducts(5);
+    }
+
+    return res.render('index', {
+        isTestView: true,
+        fakeProds: fakeProds
+    });
+});
+
 
 io.on('connection', (socket) => {
     console.log('Someone is connected');

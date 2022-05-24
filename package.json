@@ -17,10 +17,14 @@
   "dependencies": {
     "express": "^4.17.3",
     "express-handlebars": "^6.0.5",
+    "faker": "^6.6.6",
     "knex": "^2.0.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.15",
     "socket.io": "^4.4.1",
     "sqlite3": "^5.0.6"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.0.1"
   }
 }

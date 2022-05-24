@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="col-12" style="text-align: center; font-size:2rem; padding: 0.5em">
+        <h2 id="title">Test View</h2>
+    </div>
+
+    <ul class="product-list">
+        {{#each fakeProds}}
+        <div class="row" style="flex-direction: column; justify-content: center; align-items: center;">
+            <div class="row product"
+                style="width: 800px; margin: 0.5em; padding: 0.8em 5em; border-radius: 20px; background-color: rgb(174, 41, 41); flex-direction: row; justify-content: space-between; align-items: center; color: white">
+                <div class="col-2">{{title}}</div>
+                <div class="col-2">${{price}}</div>
+                <div class="col-2">
+                    <img src="{{thumbnail}}" alt="" width="150" height="150" style="border-radius: 20px;">
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </ul>
+</div>
