@@ -18,10 +18,31 @@ app.use(express.static("./public"));
 app.use("/api", routerAPI);
 server.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
 server.on("error", (error) => console.log("Server Error\n\t", error));
+const mongoose = require("mongoose");
+const denv = require('dotenv');
+const dotenv = denv.config();
+const Message = require("./db/Message");
 
+//faker
 const {
     faker
 } = require('@faker-js/faker');
+
+//normalizr
+const normalizr = require('normalizr');
+const normalize = normalizr.normalize;
+const denormalize = normalizr.denormalize;
+const schema = normalizr.schema;
+
+const author = new schema.Entity('authors', {}, {
+    idAttribute: 'email'
+})
+const text = new schema.Entity('texts', {
+    author: author
+}, {
+    idAttribute: '_id'
+})
+
 
 // handlebars engine
 app.engine(
@@ -37,10 +58,21 @@ app.set("views", "src/views");
 app.set("view engine", "hbs");
 app.get('/', (_, res) => res.redirect('/productos'));
 
+//Mongoose
+connect()
 
-//MessagesDB
-const msgOptions = require('./options/sqlite3');
-const msgKnex = require('knex')(msgOptions);
+function connect() {
+    mongoose.connect(process.env.MONGO_ATLAS_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 1000
+        })
+        .then(() => console.log('Conectado a la base de datos...'))
+        .catch(error => console.log('Error al conectarse a la base de datos', error));
+}
+
+
+
 
 //ProductsDB
 const prodsOptions = require('./options/mariaDB');
@@ -96,28 +128,42 @@ app.get('/productos/test/:cant?', (req, res) => {
     });
 });
 
-
 io.on('connection', (socket) => {
     console.log('Someone is connected');
 
     //funcion para leer todos los mensajes de la db y mostrarlos.
     function selectAllMessages() {
-        msgKnex.select('*').from('messages').orderBy('date', 'desc')
+        Message.find().sort({
+                'date': -1
+            })
             .then(messages => {
-                if (messages.length > 0) {
-                    socket.emit('messages', {
-                        messages: messages
-                    });
-                } else {
-                    socket.emit('messages', {
-                        messages: []
-                    });
-                }
+                const parsedMessages = messages.map(function (m) {
+                    return {
+                        _id: m._id.toString(),
+                        author: {
+                            email: m.author.email,
+                            name: m.author.name,
+                            lastName: m.author.lastName,
+                            age: m.author.age,
+                            alias: m.author.alias,
+                            avatar: m.author.avatar
+                        },
+                        text: m.text,
+                        timeStamp: m.timeStamp
+                    };
+                })
+                const normalizedMsgs = normalize(parsedMessages, [text]);
+                //print(normalizedMsgs);
+                console.log('Longitud antes de normalizar:', JSON.stringify(messages).length);
+                console.log('Longitud después de normalizar:', JSON.stringify(normalizedMsgs).length);
+                socket.emit('messages', {
+                    messages: messages,
+                    normalizedMsgs: normalizedMsgs,
+                });
             })
             .catch(e => {
                 console.log('Error getting messages: ', e);
-                msgKnex.destroy();
-            })
+            });
     }
 
     //funcion para leer todos los productos de la db y mostrarlos.
@@ -152,7 +198,7 @@ io.on('connection', (socket) => {
 
     //Inserto un nuevo mensaje en la base de datos de mensajes.
     socket.on('newMsg', newMsg => {
-        msgKnex('messages').insert(newMsg)
+        Message.create(newMsg)
             .then(() => {
                 console.log('Mensaje insertado');
                 selectAllMessages();
@@ -160,6 +206,6 @@ io.on('connection', (socket) => {
             })
             .catch(e => {
                 console.log('Error en Insert message: ', e);
-            })
+            });
     });
 });

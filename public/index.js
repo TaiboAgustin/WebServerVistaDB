@@ -24,11 +24,19 @@ socket.on('messages', (messagesData) => renderMessages(messagesData));
 let renderMessages = (messagesData) => {
     //Mensajes
     let htmlMensajes = messagesData.messages.map((e, i) => `
-            <div class="row">
-                <strong style="color: blue; font-size: 20px">${e.email} <em style="color: black; font-size: 12px">${e.date}</em></strong>
-                <em style="color: black; font-size: 20px; padding:0.5em">- ${e.msg}</em>
-            </div>`
-    ).join(' ');
+    <div class="row" style="margin: 2em">
+    <div class="col-1">
+        <img src="${e.author.avatar}" alt="" width="60" height="60">
+        </div>
+        <div class="col-4">
+        <strong style="color: blue; font-size: 20px">${e.author.email}</strong>
+        <br>
+        <em style="color: black; font-size: 12px">${e.timeStamp}</em>
+        </div>
+        <div class="col-5">
+        <em style="color: black; font-size: 20px; padding:0.5em">- ${e.text}</em>
+        </div>     
+    </div>`).join(' ');
     document.getElementById('messages').innerHTML = htmlMensajes;
 }
 
@@ -44,18 +52,17 @@ function createProd(form) {
     return false;
 }
 
-function getFormattedDate() {
-    var date = new Date();
-    var str = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-
-    return str;
-}
-
 function sendMsg(form) {
     let fullMsg = {
-        email: document.getElementById('email').value,
-        date: getFormattedDate(),
-        msg: document.getElementById('msg').value
+        author: {
+            email: document.getElementById('email').value,
+            name: document.getElementById('name').value,
+            lastName: document.getElementById('lastName').value,
+            age: document.getElementById('age').value,
+            alias: document.getElementById('alias').value,
+            avatar: document.getElementById('avatar').value
+        },
+        text: document.getElementById('text').value
     }
     socket.emit('newMsg', fullMsg)
     console.log(fullMsg);
